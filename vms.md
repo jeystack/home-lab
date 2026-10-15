@@ -36,22 +36,23 @@ Why the lab is isolated: see [README.md](README.md#why-the-lab-is-isolated).
 
 ---
 
-## ubuntu-target – Target VM (CIS hardening)
+## ubuntu-srv (target)
 
-| Field | Value |
-|-------|-------|
-| Purpose | Target for CIS hardening (before/after comparison, Lynis) |
-| OS / Version | Ubuntu Server 26.04.1 LTS |
-| Source | ubuntu.com – server ISO |
-| SHA256 verified | yes - 2026-10-15 |
-| vCPU / RAM / Disk | _2 / 2 GB / TBD_ |
-| Network | default (updates) → lab-isolated |
-| IP (lab-isolated) | _TBD_ |
-| Snapshots | _e.g. `pre-hardening` – date_ |
-| Status | _planned / running / done_ |
+| | |
+|---|---|
+| OS | Ubuntu Server 26.04.1 LTS ("resolute") |
+| vCPU / RAM / Disk | 2 / 2 GB / 25 GB (qcow2, LVM, no encryption) |
+| IP (lab-isolated) | _TBD_ (currently NAT: 192.168.122/149) |
+| Snapshots | `clean-install` – 2026-10-15 |
+| Status | running on NAT, fully upgraded - 2026-10-15 |
 
 **Notes / Issues**
-- _..._
+- Installed in the NAT network first so the installer could reach package mirrors and pull security updates (confirmed in the installer log). `lab-isolated` has no forwarding and no DNS by design. Acceptable risk: official image, SHA256-verified, not intentionally vulnerable. Vulnerable machines (VulnHub) go straight into `lab-isolated`.
+- OS variant `ubuntu25.10` – osinfo-db on the host doesn't know 26.04 yet; closest available
+- 2 GB RAM is below libvirt's recommendation (3 GB) for that variant; fine for a headless server, increase if needed
+- Guided LVM leaves free space in the volume group on purpose → extend later with `lvextend` when needed
+- OpenSSH server installed, password auth still enabled → switch to key-only as part of hardening
+- Ubuntu Pro skipped
 
 ---
 
