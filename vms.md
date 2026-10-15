@@ -22,14 +22,17 @@ Why the lab is isolated: see [README.md](README.md#why-the-lab-is-isolated).
 | OS / Version | Kali Linux 2026.2 |
 | Source | kali.org – QEMU image |
 | SHA256 verified | yes - 2026-10-15 |
-| vCPU / RAM / Disk | _2 / 4 GB / TBD_ |
+| vCPU / RAM / Disk | 2 / 4 GB / 80 GB (qcow2, thin provisioned) |
 | Network | default (updates) → lab-isolated |
-| IP (lab-isolated) | _TBD_ |
-| Snapshots | _e.g. `clean-install` – date_ |
-| Status | _planned / running / done_ |
+| IP (lab-isolated) | _TBD_ (currently NAT: 192.168.122.8) |
+| Snapshots | `clean-updated` – 2026-10-15 |
+| Status | running on NAT, fully upgraded - 2026-10-15 |
 
 **Notes / Issues**
-- _..._
+- Imported the official QEMU image with `virt-install --import` instead of installing from ISO
+- Default password changed right after first login
+- During `full-upgrade`, libc6 asked to restart services automatically → answered yes (lab VM, nothing critical running)
+- Display artifacts during the upgrade (graphics stack replaced while running) → fixed by a reboot
 
 ---
 

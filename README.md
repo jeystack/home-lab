@@ -115,7 +115,7 @@ VulnHub machines are intentionally vulnerable and come from third parties. On my
 - [ ] Rebuild the security lab with KVM/virt-manager
   - [x] Install KVM, libvirt and virt-manager
   - [x] Create the isolated network `lab-isolated`
-  - [ ] Kali VM (attacker)
+  - [x] Kali VM (attacker)
   - [ ] Ubuntu Server VM (target)
   - [ ] Move both VMs to `lab-isolated`, test connectivity, take snapshots
   - [ ] Import a VulnHub machine and run a first scan
