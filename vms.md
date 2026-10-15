@@ -9,8 +9,8 @@ Why the lab is isolated: see [lab_notes.md](lab_notes.md).
 
 | Network | Type | Subnet | Internet | Used for |
 |---------|------|--------|----------|----------|
-| default: 192.168.122.0/24 | NAT | _TBD_ | yes | initial setup & updates only |
-| lab-isolated | isolated (no forwarding) | 192.168.100.0/24) | no | all lab work |
+| default | NAT | 192.168.122.0/24 | yes | initial setup & updates only |
+| lab-isolated | isolated (no forwarding) | 192.168.100.0/24 | no | all lab work |
 
 ---
 
