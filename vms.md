@@ -1,7 +1,7 @@
 # VM Inventory – KVM Home Lab
 
 Host: Ubuntu 26.04.1 LTS on ThinkPad T14 G2 · Hypervisor: KVM/QEMU + libvirt (virt-manager)
-Why the lab is isolated: see [lab_notes.md](lab_notes.md).
+Why the lab is isolated: see [README.md](README.md#why-the-lab-is-isolated).
 
 > Credentials are **not** stored here – they live in `private/` (excluded via .gitignore).
 
@@ -19,8 +19,8 @@ Why the lab is isolated: see [lab_notes.md](lab_notes.md).
 | Field | Value |
 |-------|-------|
 | Purpose | Attacker machine: scanning & enumeration |
-| OS / Version | Kali Linux _TBD_ |
-| Source | kali.org – _QEMU image / installer_ |
+| OS / Version | Kali Linux 2026.2 |
+| Source | kali.org – QEMU image |
 | SHA256 verified | yes - 2026-10-15 |
 | vCPU / RAM / Disk | _2 / 4 GB / TBD_ |
 | Network | default (updates) → lab-isolated |
@@ -38,7 +38,7 @@ Why the lab is isolated: see [lab_notes.md](lab_notes.md).
 | Field | Value |
 |-------|-------|
 | Purpose | Target for CIS hardening (before/after comparison, Lynis) |
-| OS / Version | Ubuntu Server 26.04 LTS |
+| OS / Version | Ubuntu Server 26.04.1 LTS |
 | Source | ubuntu.com – server ISO |
 | SHA256 verified | yes - 2026-10-15 |
 | vCPU / RAM / Disk | _2 / 2 GB / TBD_ |
