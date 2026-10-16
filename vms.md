@@ -3,6 +3,8 @@
 Host: Ubuntu 26.04.1 LTS on ThinkPad T14 G2 · Hypervisor: KVM/QEMU + libvirt (virt-manager)
 Why the lab is isolated: see [README.md](README.md#why-the-lab-is-isolated).
 
+> **Decommissioned 2026-10-17** together with the dual boot – all VMs below were deleted with the Ubuntu partition. Kept as a reference for the rebuild on Proxmox.
+
 > Credentials are **not** stored here – they live in `private/` (excluded via .gitignore).
 
 ## Networks
@@ -24,9 +26,9 @@ Why the lab is isolated: see [README.md](README.md#why-the-lab-is-isolated).
 | SHA256 verified | yes - 2026-10-15 |
 | vCPU / RAM / Disk | 2 / 4 GB / 80 GB (qcow2, thin provisioned) |
 | Network | default (updates) → lab-isolated |
-| IP (lab-isolated) | _TBD_ (currently NAT: 192.168.122.8) |
+| IP | NAT 192.168.122.8 (never moved to lab-isolated) |
 | Snapshots | `clean-updated` – 2026-10-15 |
-| Status | running on NAT, fully upgraded - 2026-10-15 |
+| Status | decommissioned 2026-10-17 (was: running on NAT, fully upgraded – 2026-10-15) |
 
 **Notes / Issues**
 - Imported the official QEMU image with `virt-install --import` instead of installing from ISO
@@ -42,9 +44,9 @@ Why the lab is isolated: see [README.md](README.md#why-the-lab-is-isolated).
 |---|---|
 | OS | Ubuntu Server 26.04.1 LTS ("resolute") |
 | vCPU / RAM / Disk | 2 / 2 GB / 25 GB (qcow2, LVM, no encryption) |
-| IP (lab-isolated) | _TBD_ (currently NAT: 192.168.122/149) |
+| IP | NAT 192.168.122.149 (never moved to lab-isolated) |
 | Snapshots | `clean-install` – 2026-10-15 |
-| Status | running on NAT, fully upgraded - 2026-10-15 |
+| Status | decommissioned 2026-10-17 (was: running on NAT, fully upgraded – 2026-10-15) |
 
 **Notes / Issues**
 - Installed in the NAT network first so the installer could reach package mirrors and pull security updates (confirmed in the installer log). `lab-isolated` has no forwarding and no DNS by design. Acceptable risk: official image, SHA256-verified, not intentionally vulnerable. Vulnerable machines (VulnHub) go straight into `lab-isolated`.
@@ -53,6 +55,8 @@ Why the lab is isolated: see [README.md](README.md#why-the-lab-is-isolated).
 - Guided LVM leaves free space in the volume group on purpose → extend later with `lvextend` when needed
 - OpenSSH server installed, password auth still enabled → switch to key-only as part of hardening
 - Ubuntu Pro skipped
+- Rebooted after `full-upgrade` before the snapshot (needrestart reported deferred services)
+- Timezone left at UTC (server default; keeps logs comparable)
 
 ---
 
@@ -68,7 +72,7 @@ Why the lab is isolated: see [README.md](README.md#why-the-lab-is-isolated).
 | Network | **lab-isolated only – never NAT** |
 | IP (lab-isolated) | _TBD (found via scan)_ |
 | Snapshots | _`imported` – date_ |
-| Status | _planned / running / done_ |
+| Status | _planned for the Proxmox lab_ |
 
 **Notes / Issues**
 - _..._
