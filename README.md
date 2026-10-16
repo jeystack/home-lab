@@ -2,6 +2,8 @@
 
 Personal notes from my home lab and Linux setup. I document what I built, what broke, how I fixed it and what I learned.
 
+> **Status (2026-10-17):** The dual-boot setup and the KVM lab described below have been **decommissioned** – switching between two operating systems didn't work well for daily use. The laptop is back to Windows 11 only (see the [2026-10-17 entry](#2026-10-17--decommissioning-the-dual-boot)). Next step: rebuild the lab with **Proxmox VE on dedicated hardware**. The notes below stay as documentation of what I built and learned.
+
 ## What's in this repo
 
 | File | Content |
@@ -109,14 +111,41 @@ VulnHub machines are intentionally vulnerable and come from third parties. On my
 
 ---
 
+## 2026-10-17 – Decommissioning the dual boot
+
+### Why
+Switching between Ubuntu and Windows several times a day cost more than it gave me. The lab will be rebuilt on dedicated hardware with Proxmox VE, so the laptop doesn't need Linux anymore.
+
+### Backup check before deleting anything
+- `home-lab` repo: last commit (`021e61e`) already on GitHub
+- Both Obsidian vaults: `HEAD -> main, origin/main` – nothing unpushed
+- No other files on the Ubuntu partition worth keeping; VM disks and ISOs are rebuilt later anyway
+
+### Steps (all from Windows, admin prompt)
+1. **Firmware boot entry:** `bcdedit /enum firmware` → identified the `Ubuntu` entry by its description, deleted it with `bcdedit /delete {id}`. Windows Boot Manager was already first in `displayorder`
+2. **EFI partition:** mounted with `mountvol S: /S`, removed `S:\EFI\ubuntu`
+3. **Fallback path:** `S:\EFI\Boot` still contained Ubuntu's shim (`bootx64.efi`, 966 KB) plus `fbx64.efi` and `mmx64.efi` → deleted both and replaced `bootx64.efi` with a copy of `\EFI\Microsoft\Boot\bootmgfw.efi` (3 MB). Unmounted with `mountvol S: /D`
+4. **Reboot test** before touching any partition
+5. **Partitions:** deleted the LUKS partition (698 GB) and `/boot` (2 GB) in Disk Management, extended C: to 929 GB. The recovery partition sits *before* C:, so the free space was directly adjacent
+6. **Secure Boot:** suspended BitLocker for one reboot (`manage-bde -protectors -disable C: -RebootCount 1`), enabled Secure Boot in the BIOS **without** restoring factory keys (key state stays "Customized"), verified afterwards: Secure Boot State **On**, BitLocker **Protection On**
+
+### What went wrong / what I learned
+- **Order matters:** GRUB lives on the EFI partition but loads its files from `/boot`. Deleting `/boot` first would have left the machine at `grub rescue>`. So: boot entries first, reboot test, then partitions
+- **BitLocker asked for the recovery key** after the first reboot. Changing the firmware boot entries changes what the TPM measures at startup, so BitLocker refused to unlock automatically. After one boot with the recovery key the new state was sealed and the next reboot needed no key. For the Secure Boot change I suspended BitLocker beforehand – no prompt
+- **The fallback path is easy to miss:** removing `EFI\ubuntu` isn't enough if Ubuntu's shim still sits in `EFI\Boot`. After a BIOS reset the laptop would have tried to boot it
+- **Restoring factory Secure Boot keys was deliberately skipped:** "Customized" can also come from Windows updates adding newer Microsoft certificates. Smallest reversible change first: just enable Secure Boot and test
+- **Cleanup outside the machine:** removed the Ubuntu host's SSH key from GitHub
+
+---
+
 ## Open tasks
-- [ ] Windows: set `RealTimeIsUniversal` so Windows reads the RTC as UTC
-- [ ] Check whether Secure Boot can be enabled safely
-- [ ] Rebuild the security lab with KVM/virt-manager
-  - [x] Install KVM, libvirt and virt-manager
-  - [x] Create the isolated network `lab-isolated`
-  - [x] Kali VM (attacker)
-  - [ ] Ubuntu Server VM (target)
-  - [ ] Move both VMs to `lab-isolated`, test connectivity, take snapshots
-  - [ ] Import a VulnHub machine and run a first scan
+- [x] Windows: set `RealTimeIsUniversal` so Windows reads the RTC as UTC *(obsolete after decommissioning)*
+- [x] Check whether Secure Boot can be enabled safely → enabled 2026-10-17
+- [x] Decommission the dual boot and restore a Windows-only laptop (2026-10-17)
+- [ ] Rebuild the security lab on dedicated hardware with **Proxmox VE**
+  - [ ] Kali VM (attacker) and Ubuntu Server VM (target) in an isolated network, test connectivity, snapshots
+  - [ ] Test a restore, not just the backup
+  - [ ] Import a VulnHub machine (isolated network only) and run a first scan
 - [ ] Harden the Ubuntu VM following the CIS Benchmark, document before/after (Lynis)
+
+**Done on the KVM lab before decommissioning:** KVM/libvirt/virt-manager installed, isolated network `lab-isolated` defined, Kali VM imported and upgraded, Ubuntu Server VM installed and upgraded (both still on NAT – they were never moved to `lab-isolated`). Details in [`vms.md`](vms.md).
