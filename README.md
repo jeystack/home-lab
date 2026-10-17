@@ -2,7 +2,7 @@
 
 Personal notes from my home lab and Linux setup. I document what I built, what broke, how I fixed it and what I learned.
 
-> **Status (2026-10-17):** The dual-boot setup and the KVM lab described below have been **decommissioned** – switching between two operating systems didn't work well for daily use. The laptop is back to Windows 11 only (see the [2026-10-17 entry](#2026-10-17--decommissioning-the-dual-boot)). Next step: rebuild the lab with **Proxmox VE on dedicated hardware**. The notes below stay as documentation of what I built and learned.
+> **Status (2026-10-17):** The dual-boot setup and the KVM lab described below have been **decommissioned** – switching between two operating systems didn't work well for daily use. The laptop is back to Windows 11 only (see the [2026-10-17 entry](#2026-10-17--decommissioning-the-dual-boot)). Next step: rebuild the lab with **Proxmox VE on dedicated hardware**. Until then, an interim lab runs on Hyper-V on the laptop (see [Hyper-V as interim lab](#2026-10-17--hyper-v-as-interim-lab)). The notes below stay as documentation of what I built and learned.
 
 ## What's in this repo
 
