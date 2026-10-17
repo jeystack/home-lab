@@ -138,10 +138,36 @@ Switching between Ubuntu and Windows several times a day cost more than it gave 
 
 ---
 
+## 2026-10-17 – Hyper-V as interim lab
+
+### Why
+Until the Proxmox hardware is set up, the lab runs on Hyper-V on the Windows 11 Pro host.
+The Windows hypervisor was already running because of VBS (status `2`). Hyper-V is the only
+option here that supports nested virtualization with VBS kept on – needed to run Proxmox in a VM.
+Keeping VBS enabled was a deliberate security decision.
+
+### Pre-check (admin PowerShell)
+- Architecture `AMD64`
+- BitLocker `FullyEncrypted` / `On` (TPM + recovery password); recovery key ID verified against the offline copy before any change
+- VBS running, Hyper-V feature `Disabled`
+
+### Steps
+1. **ISO:** downloaded Proxmox VE 9.2, verified with `Get-FileHash` against the SHA256 on proxmox.com
+2. **BitLocker:** `Suspend-BitLocker -MountPoint C: -RebootCount 2`
+3. **Hyper-V:** `Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-All -All -NoRestart`, then restart
+4. **Post-check:** Hyper-V `Enabled`, `vmms` running, Secure Boot `True`
+
+### What went wrong / what I learned
+- **A hash proves integrity, not suitability:** my first download was the ARM64 ISO. The hash matched – the architecture was wrong. I now check version and architecture before downloading.
+- **Check instead of assume:** only one reboot happened, so BitLocker was still suspended afterwards. Resumed it manually with `Resume-BitLocker` instead of waiting for the next reboot.
+
+---
+
 ## Open tasks
 - [x] Windows: set `RealTimeIsUniversal` so Windows reads the RTC as UTC *(obsolete after decommissioning)*
 - [x] Check whether Secure Boot can be enabled safely → enabled 2026-10-17
 - [x] Decommission the dual boot and restore a Windows-only laptop (2026-10-17)
+- [x] Enable Hyper-V as an interim lab on Windows (2026-10-17)
 - [ ] Rebuild the security lab on dedicated hardware with **Proxmox VE**
   - [ ] Kali VM (attacker) and Ubuntu Server VM (target) in an isolated network, test connectivity, snapshots
   - [ ] Test a restore, not just the backup
